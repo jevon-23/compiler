@@ -9,22 +9,30 @@
 const int tokenSize2 = (sizeof(token) + (sizeof(char) * MAX_TOK_LEN) +
                         (sizeof(char) * MAX_TYPE_LEN) + sizeof(bool));
 
+/*
+  Frees all of the tokens in TOKENLIST, and then frees TOKENLIST.
+*/
 void freeTokenList(token *tokenList, int tokenLen) {
   for (int i = 0; i < tokenLen; i++) {
     freeToken((tokenList + i));
   }
+  free(tokenList);
 }
 
-// Counts the length of a tokenList.
+/*
+  Returns back the length of the TOKENLIST.
+*/
 int tokenListLen(token *tokenList) {
   int counter = 0;
-  for (int i = 0; (tokenList + i)->tok != NULL; i++) {
-    counter++;
-  }
+  for (int i = 0; (tokenList + i)->tok != NULL; i++, counter++)
+    ;
   return counter;
 }
 
-// Appends a token to a list.
+/*
+  Appends single token NEWTOKEN onto the end of token list TOKENLIST. Returns
+  back a pointer to TOKENLISTS' head.
+*/
 token *tokenListAppened(token *tokenList, token *newToken, int *tokenLen) {
 
   // If init list
@@ -38,10 +46,13 @@ token *tokenListAppened(token *tokenList, token *newToken, int *tokenLen) {
   return tokenList;
 }
 
-// Appends two token Lists together
+/*
+  Concatenates two tokenlists together. Takes token list BACK, and
+  concatenatesit onto the end of tokenList FRONT
+*/
 token *tokenListConcatenate(token *front, int *frontLen, token *back,
                             int *backLen) {
-  for (int i = 0; i < (*backLen) - 1; i++) {
+  for (int i = 0; i < (*backLen); i++) {
     front = tokenListAppened(front, (back + i), frontLen);
   }
   return front;

@@ -2,11 +2,15 @@
 #ifndef KEY_TOKEN_H // header guarde
 #define KEY_TOKEN_H
 
+/*
+C syntax. Maps the key words/ values in C to identifiers.
+*/
+
 // Key_tkoens, a mapping of the key tokens.
 typedef struct key_tokens {
-  char *key;
-  char *token;
-  bool split;
+  char *key;   // value in C syntax
+  char *token; // program identifier
+  bool split;  // if the key is a splittable type.
 } key_tokens;
 
 // Tokens, Not making this a type so that we do not have to build anything at
@@ -20,7 +24,7 @@ typedef struct key_tokens {
 #define CLOSED_PARENTHESIS ")"
 #define CLOSED_PARENTHESIS_TOKEN "closed_parenthesis" // )
 #define COMMA ","
-#define COMMA_KEY "comma"
+#define COMMA_KEY "comma" // ,
 #define SEMICOLON ";\0"
 #define SEMICOLON_TOKEN "semi_colon" // ;
 #define INTEGER_KEY "int"
