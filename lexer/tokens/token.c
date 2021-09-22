@@ -20,9 +20,7 @@ const int tokenSize = (sizeof(token) + (sizeof(char) * MAX_TOK_LEN) +
 void printTokens(token *allTokens, int *allTokenLen) {
   printf("printing Tokens, expecting %d\n", *allTokenLen);
   printSpace();
-  for (int i = 0; i < (*allTokenLen) || (allTokens + i) != NULL ||
-                  !strcmp((allTokens + i)->tok, "\0");
-       i++) {
+  for (int i = 0; i < (*allTokenLen) && (allTokens + i) != NULL; i++) {
     printf("currTok = %s ~ typ = %s\n", (allTokens + i)->tok,
            (allTokens + i)->type);
   }
