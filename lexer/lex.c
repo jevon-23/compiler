@@ -76,22 +76,19 @@ char *getStrTokState(char *line, char *delim, int state) {
 }
 
 /*
-  Lex a line. Returns back a list of tokens that this line consists of.
+  LexLine() helper function.
+  Fills up allTokens with tokens found from splitting LINE by DELIM.
 */
-token *lexLine(char *line) {
+
+token *lex(char *line, char *delim, token *allTokens, int *allTokensLen,
+           int state) {
+
   // strtok edits original line, so saving it here for later usage
   char *ogLine = (char *)malloc(sizeof(char) * strlen(line));
   strcpy(ogLine, line);
 
-  // all tokens on this line
-  token *allTokens = (token *)malloc(sizeOfToken3);
-  int allTokensLen = 1;
-
-  int state = 0;            // state of strtok call
-  char *whiteSpace = " \t"; // white space or tab
-
   // split our line by whitespaces and tokenize each value.
-  char *currTok = strtok(line, whiteSpace);
+  char *currTok = getStrTokState(line, delim, state);
   while (currTok != NULL) {
     // Create a new token
     char *currType = checkType(currTok);
@@ -101,20 +98,36 @@ token *lexLine(char *line) {
     token *postSplit = splitToken(newTok);
     if (postSplit == NULL) {
       // Our original token is not a splittable type -> input into allTokens
-      allTokens = tokenListAppened(allTokens, newTok, &allTokensLen);
+      allTokens = tokenListAppened(allTokens, newTok, allTokensLen);
     } else {
       // Our original input token was splittable, may need to input 1+ token
       int postSplitLen = tokenListLen(postSplit);
-      allTokens = tokenListConcatenate(allTokens, &allTokensLen, postSplit,
+      allTokens = tokenListConcatenate(allTokens, allTokensLen, postSplit,
                                        &postSplitLen);
 
       // b/c splitToken() is ran all the way through, there will be another
       // strtok() -> our place in strtok stack will be lost. Retreiving state.
       strcpy(line, ogLine);
-      currTok = getStrTokState(line, whiteSpace, state);
+      currTok = getStrTokState(line, delim, state);
     }
     state++;
-    currTok = strtok(NULL, whiteSpace);
+    currTok = strtok(NULL, delim);
   }
+  return allTokens;
+}
+
+/*
+  Lex a line. Returns back a list of tokens that this line consists of.
+*/
+token *lexLine(char *line) {
+
+  // all tokens on this line
+  token *allTokens = (token *)malloc(sizeOfToken3);
+  int allTokensLen = 1;
+
+  int state = 0;            // state of strtok call
+  char *whiteSpace = " \t"; // white space or tab
+  // lex a line
+  allTokens = lex(line, whiteSpace, allTokens, &allTokensLen, state);
   return allTokens;
 }
