@@ -25,6 +25,8 @@ typedef struct key_tokens {
 #define CLOSED_PARENTHESIS_TOKEN "closed_parenthesis" // )
 #define COMMA ","
 #define COMMA_KEY "comma" // ,
+#define EQUALS "="
+#define EQUALS_KEY "equals"
 #define SEMICOLON ";\0"
 #define SEMICOLON_TOKEN "semi_colon" // ;
 #define INTEGER_KEY "int"
@@ -43,4 +45,5 @@ char *getKey(char *token, key_tokens *map); // Get the key associated with token
 void printMap(key_tokens *map); // Print the mapp of all keys (mainly for
 char **getMapKeys();            // Return a list of all of the keys in the list
 char **getMapTokens(); // Returns a list of all of the tokens in the list
+bool getTokenSplit(char *tokenKey, key_tokens *map);
 #endif

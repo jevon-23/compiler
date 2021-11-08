@@ -29,8 +29,14 @@
 //   printTokens(allTokens, allTokenLen);
 // }
 
+void TestLexer() {
+  token *allTokens = lexer("ret2.c");
+  int allTokensLen = tokenListLen(allTokens);
+  printTokens(allTokens, &allTokensLen);
+}
+
 void TestLexLine() {
-  char *lineStr = "currLine is test(rand(1, 2, 3))";
+  char *lineStr = "int ret2() {";
   char *line = (char *)malloc(sizeof(char) * strlen(lineStr));
   strcpy(line, lineStr);
   printf("lexing the line: %s\n", line);
@@ -46,6 +52,8 @@ int main() {
   // printf("TESTING MAPTOKENS\n");
   // TestMapTokens();
   // printSpace();
-  printSpace();
+  // printSpace();
   TestLexLine();
+  // printSpace();
+  // TestLexer();
 }

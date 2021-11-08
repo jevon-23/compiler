@@ -24,6 +24,7 @@ void printTokens(token *allTokens, int *allTokenLen) {
     printf("currTok = %s ~ typ = %s\n", (allTokens + i)->tok,
            (allTokens + i)->type);
   }
+  printf("Finished printing!\n\n");
 }
 
 /*
@@ -38,17 +39,21 @@ void freeToken(token *theToken) {
 /*
   Create a token struct based on TOK, TYPE, and SPLIT.
 */
-token *makeToken(char *tok, char *type, bool split) {
+token *makeToken(char *tok, char *typ, bool split) {
+
+  printf("tok = %s  ~ type = %s,  ~ bool = %d\n", tok, typ, split);
   token *out = (token *)malloc(tokenSize); // output token
 
   out->tok = (char *)malloc(sizeof(char) * strlen(tok));
   strcpy(out->tok, tok);
+  printf("copied tok\n");
+  out->type = (char *)malloc(sizeof(char) * strlen(typ));
+  printf("malloced space, typ = %s \n", typ);
+  strcpy(out->type, typ);
 
-  out->type = (char *)malloc(sizeof(char) * strlen(type));
-  strcpy(out->type, type);
+  printf("coped type\n");
 
   out->split = split;
-
   return out;
 }
 
@@ -86,14 +91,15 @@ char *checkType(char *currTok) {
 Checking to see if DELIM is a splittable type.
 */
 bool isSplittableType(char *delim) {
-  if (!strcmp(delim, OPEN_BRACKET_TOCKEN) ||
-      !strcmp(delim, CLOSE_BRACKET_TOKEN) ||
-      !strcmp(delim, OPEN_PARENTHESIS_TOKEN) ||
-      !strcmp(delim, CLOSED_PARENTHESIS_TOKEN) ||
-      !strcmp(delim, SEMICOLON_TOKEN) || !strcmp(delim, COMMA_KEY)) {
-    return true;
-  }
-  return false;
+  printf("delim = %s", delim);
+  key_tokens *map = buildMap();
+  char *key = getKey(delim, map);
+  printf("key = %s", key);
+  bool isSplit = getTokenSplit(key, map);
+
+  printf("got split ~ isSpliti = %d\n", isSplit);
+
+  return isSplit;
 }
 
 /*
@@ -133,11 +139,17 @@ int countRepititon(char *string, char *delim) {
 token *split(char *splitter, char *prev, char *prevType, token *theToken,
              token *allTokens, int allTokensLen, key_tokens *coreKeys) {
 
+  /*
+    Ok, so right now we are failing in the case of test().
+    Why? we run
+  */
+
   while (prev != NULL) {
-    prevType = checkType(prev);             // Get the type of the next token
     char *key = getKey(prevType, coreKeys); // token for this type
 
+    printf("prev = %s, prevType = %s", prev, prevType);
     if (isSplittableType(prevType)) {
+      printf("prev = %s\n", prev);
       // temporary token to recurse with.
       token *tempTok = makeToken(prev, prevType, true);
       // list of extra tokens that we get from recursive
@@ -152,26 +164,32 @@ token *split(char *splitter, char *prev, char *prevType, token *theToken,
         // how many times do we see our current delim? input that amount
         int numInp = countRepititon(prev, key);
         int numUsed = 0;
-        for (int i = allTokensLen - 2; !strcmp((allTokens + i)->tok, key);
-             i--, numUsed++)
-          ;
-
+        // for (int i = allTokensLen - 2; !strcmp((allTokens + i)->tok, key);
+        //      i--, numUsed++)
+        //   ;
         for (int i = 0; i < abs((numInp - numUsed)); i++) {
           token *input = makeToken(key, prevType, true);
           allTokens = tokenListAppened(allTokens, input, &allTokensLen);
         }
+        printTokens(allTokens, &allTokensLen);
       }
-      free(extras);       // free extras
+      // free(extras);       // free extras
       freeToken(tempTok); // free tempTok
     } else {
+      printf("inside of else statement, making token\n");
       // Add the current token and the delim that we are spliting by.
       token *prefix = makeToken(prev, prevType, false);
+      printf("made token1\n");
       token *delim = makeToken(splitter, theToken->type, true);
+      printf("made the tokens\n");
       allTokens = tokenListAppened(allTokens, prefix, &allTokensLen);
+      printf("input first tok\n");
       allTokens = tokenListAppened(allTokens, delim, &allTokensLen);
+      printf("finished making token\n");
     }
     prev = strtok(NULL, splitter); // Go to the next token
   }
+  printTokens(allTokens, &allTokensLen);
   return allTokens;
 }
 
@@ -192,15 +210,17 @@ token *splitToken(token *theToken) {
   }
 
   token *allTokens = (token *)malloc(tokenSize);     // list of all tokens
-  int allTokensLen = 1;                              // length of allTokens
+  int allTokensLen = 0;                              // length of allTokens
   char *splitter = getKey(theToken->type, coreKeys); // tok we are splitting by
 
   // strtok returns the string that comes before splitter
+  // char *prevPoint = theToken->tok;
+  // char *prev = strtok_r(theToken->tok, splitter, &prevPoint);
   char *prev = strtok(theToken->tok, splitter);
   char *prevType = checkType(prev); // type associated w/ prev
-
-  // recurse! returns back all of the tokens after the current token has been
-  // split
+  printf("calling split, prev = %s\n", prev);
+  // recurse! returns back all of the tokens after the current token has
+  // been split
   return split(splitter, prev, prevType, theToken, allTokens, allTokensLen,
                coreKeys);
 }

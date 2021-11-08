@@ -15,6 +15,15 @@ const int sizeOfToken3 = sizeof(token) + (sizeof(char) * MAX_TOK_LEN) +
   Reads from a file, and tokenizes it
 */
 
+token *rand(char *file) {
+  printf("hello world");
+  printf("hello world");
+  while int x = 0; < 10 {
+    printf("what ma i even doin
+  }
+  
+}
+
 token *lexer(char *fileName) {
   aFile theFile = readFile(fileName);
 

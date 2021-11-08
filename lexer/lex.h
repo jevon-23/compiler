@@ -18,4 +18,11 @@
 // Parses a line, and return back the individual tokens found in it.
 token *lexLine(char *line);
 
+token *lexFile(aFile *theFile, token *allTokens, int *allTokensLen);
+
+token *lex(char *line, char *delim, token *allTokens, int *allTokensLen,
+           int state);
+
+token *lexer(char *fileName);
+
 #endif // LEX_H

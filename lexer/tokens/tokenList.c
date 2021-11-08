@@ -13,10 +13,13 @@ const int tokenSize2 = (sizeof(token) + (sizeof(char) * MAX_TOK_LEN) +
   Frees all of the tokens in TOKENLIST, and then frees TOKENLIST.
 */
 void freeTokenList(token *tokenList, int tokenLen) {
-  for (int i = 0; i < tokenLen; i++) {
+  for (int i = 0; i < tokenLen && (tokenList + i) != NULL; i++) {
+    printf("tokenLen = %d, tokenList + i = %s\n", tokenLen,
+           (tokenList + i)->tok);
+
     freeToken((tokenList + i));
   }
-  free(tokenList);
+  printf("finished freeing\n");
 }
 
 /*
@@ -36,13 +39,18 @@ int tokenListLen(token *tokenList) {
 token *tokenListAppened(token *tokenList, token *newToken, int *tokenLen) {
 
   // If init list
-  if (*tokenLen == 1) {
+  printf("tokenLen = %d\n", *tokenLen);
+  if (*tokenLen == 0) {
     *tokenList = *newToken;
     (*tokenLen)++;
   } else {
-    tokenList = (token *)realloc(tokenList, (tokenSize2 * ++(*tokenLen)));
-    *(tokenList + (*tokenLen - 2)) = *(newToken);
+    // printSpace();
+    (*tokenLen)++;
+    tokenList = (token *)realloc(tokenList, (tokenSize2 * (*tokenLen)));
+    *(tokenList + (*tokenLen)) = *(newToken);
   }
+  // (*tokenLen)++;
+  printf("tokenLen = %d ~ newToken->tok = %s\n", *tokenLen, newToken->tok);
   return tokenList;
 }
 
@@ -55,5 +63,7 @@ token *tokenListConcatenate(token *front, int *frontLen, token *back,
   for (int i = 0; i < (*backLen); i++) {
     front = tokenListAppened(front, (back + i), frontLen);
   }
+  // printf("\nprinting tokens after tokenListConcat\n");
+  // printTokens(front, frontLen);
   return front;
 }

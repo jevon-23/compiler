@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define numMapKeys 10 // the amount of keys that we regex for
+#define numMapKeys 11 // the amount of keys that we regex for
 
 // Returns a list of all of the tokens in the key_token map
 char **getMapTokens() {
@@ -23,6 +23,7 @@ char **getMapTokens() {
   *(out + 7) = RETURN_KEY_TOKEN;
   *(out + 8) = IS_INTEGER_TOKEN;
   *(out + 9) = IS_IDENTIFIER_TOKEN;
+  *(out + 10) = EQUALS_KEY;
   return out;
 }
 
@@ -42,6 +43,7 @@ char **getMapKeys() {
   *(out + 7) = RETURN_KEY;
   *(out + 8) = IS_INTEGER;
   *(out + 9) = IS_IDENTIFIER_KEY;
+  *(out + 10) = EQUALS;
   return out;
 }
 
@@ -75,6 +77,15 @@ char *getKey(char *token, key_tokens *map) {
     }
   }
   return "";
+}
+
+bool getTokenSplit(char *tokenKey, key_tokens *map) {
+  for (int i = 0; i < numMapKeys; i++) {
+    if (!strcmp(tokenKey, (map + i)->token)) {
+      return (map + i)->split;
+    }
+  }
+  return false;
 }
 
 // Fill up the map with the built-in c tokens
@@ -118,6 +129,10 @@ void fillMap(key_tokens *map) {
   (map + 9)->key = IS_IDENTIFIER_KEY;
   (map + 9)->token = IS_IDENTIFIER_TOKEN;
   (map + 9)->split = false;
+
+  (map + 10)->key = EQUALS;
+  (map + 10)->token = EQUALS_KEY;
+  (map + 10)->split = true;
 }
 
 /*

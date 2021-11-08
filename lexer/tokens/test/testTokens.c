@@ -21,8 +21,8 @@ void TestCountRepitition() {
 void TestTokenListConcatenate() {
   token *front = (token *)malloc(sizeOfToken * 2);
   token *back = (token *)malloc(sizeOfToken * 2);
-  int flen = 3;
-  int blen = 3;
+  int flen = 2;
+  int blen = 2;
   char *testf1 = "testf1";
   char *testf2 = "testf2";
   char *testb1 = "testb1";
@@ -35,7 +35,11 @@ void TestTokenListConcatenate() {
 
   back = makeToken(testb1, tok2, false);
   *(back + 1) = *(token *)makeToken(testb2, tok2, true);
+  printf("front = ");
+  printTokens(front, &flen);
 
+  printf("back = ");
+  printTokens(back, &blen);
   front = tokenListConcatenate(front, &flen, back, &blen);
   printTokens(front, &flen);
 }
@@ -43,7 +47,7 @@ void TestTokenListConcatenate() {
 void TestTokenListAppend() {
   token *tokenList = (token *)malloc(sizeOfToken);
   int *tokenLen = malloc(sizeof(int));
-  *tokenLen = 1;
+  *tokenLen = 0;
   char *test = "test";
   char *tok = "token";
 
@@ -78,7 +82,7 @@ void TestMakeToken() {
 
 void TestSplitToken() {
   token testToken;
-  char *tok = "test(rand(1, bye));";
+  char *tok = "main()";
   char *typ = checkType(tok);
 
   printf("typ = %s\n", typ);
